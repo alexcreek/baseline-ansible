@@ -1,0 +1,53 @@
+---
+- name: Install tools
+  ansible.builtin.apt:
+    update_cache: true
+    pkg:
+      - htop
+      - mtr
+      - ncat
+      - nmap
+      - bind9-host
+      - procps
+      - sysstat
+
+- name: Create user
+  ansible.builtin.user:
+    name: alex
+    shell: /bin/bash
+    groups: sudo
+    append: yes
+
+- name: Configure ssh key
+  ansible.posix.authorized_key:
+    user: alex
+    state: present
+    key: "{{ lookup('file', '/Users/alex/.ssh/id_rsa.pub') }}"
+
+- name: Enable passwordless sudo
+  community.general.sudoers:
+    name: 10-sudo-no-pass
+    commands: ALL
+    nopassword: true
+    group: sudo
+
+- name: Configure user shell
+  ansible.builtin.copy:
+    src: bashrc
+    dest: /home/alex/.bashrc
+    owner: alex
+    group: alex
+    mode: '0644'
+
+- name: Configure root shell
+  ansible.builtin.copy:
+    src: bashrc
+    dest: /root/.bashrc
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Nuke motd
+  ansible.builtin.file:
+    path: /etc/motd
+    state: absent
