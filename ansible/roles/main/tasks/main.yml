@@ -16,7 +16,7 @@
     name: alex
     shell: /bin/bash
     groups: sudo
-    append: yes
+    append: true
 
 - name: Configure ssh key
   ansible.posix.authorized_key:
