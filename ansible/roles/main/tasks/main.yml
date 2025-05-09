@@ -10,6 +10,8 @@
       - bind9-host
       - procps
       - sysstat
+      - rsync
+      - git
 
 - name: Create user
   ansible.builtin.user:
